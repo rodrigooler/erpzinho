@@ -21,4 +21,6 @@ npm install @prisma/client
 docker compose -f "docker-compose.yaml" up -d --build
 
 ./node_modules/.bin/prisma generate
+
+./node_modules/.bin/prisma migrate dev
 ```
