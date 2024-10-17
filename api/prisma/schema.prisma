@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid()) @map("public_id")
+  name     String @db.VarChar(500)
+  email    String @unique @db.VarChar(254)
+  password String @db.VarChar(32)
+  role     Role   @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products                Product[]
+  productGategories       ProductCategory[]
+  productCategoryProducts ProductCategoryProduct[]
+
+  @@map("users")
+}
+
+model Product {
+  id          BigInt @id @default(autoincrement())
+  publicId    String @unique @default(cuid()) @map("public_id")
+  name        String @db.VarChar(500)
+  description String @db.Text
+  price       Float
+  stock       Int
+  image       String @db.VarChar(500)
+
+  userid BigInt @map("user_id")
+  user   User   @relation(fields: [userid], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productCategoryProducts ProductCategoryProduct[]
+
+  @@map("products")
+}
+
+model ProductCategory {
+  id       BigInt @id @default(autoincrement())
+  publicId String @unique @default(cuid()) @map("public_id")
+  name     String @db.VarChar(500)
+
+  userId BigInt @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productCategoryProducts ProductCategoryProduct[]
+
+  @@map("product_categories")
+}
+
+model ProductCategoryProduct {
+  id BigInt @id @default(autoincrement())
+
+  productCategoryId BigInt          @map("product_category_id")
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+
+  productId BigInt  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  userId BigInt @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("product_category_products")
+}
