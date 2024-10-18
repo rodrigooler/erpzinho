@@ -20,8 +20,8 @@ model User {
   password String @db.VarChar(32)
   role     Role   @default(USER)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   products                Product[]
   productGategories       ProductCategory[]
@@ -42,8 +42,8 @@ model Product {
   userid BigInt @map("user_id")
   user   User   @relation(fields: [userid], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   productCategoryProducts ProductCategoryProduct[]
 
@@ -58,8 +58,8 @@ model ProductCategory {
   userId BigInt @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   productCategoryProducts ProductCategoryProduct[]
 
@@ -77,6 +77,9 @@ model ProductCategoryProduct {
 
   userId BigInt @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("product_category_products")
 }
