@@ -1,34 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import type { User } from '@prisma/client';
+import type { Optional } from '@prisma/client/runtime/library';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  findMany() {
-    return this.prismaService.user.findMany();
+  buildWhereClause(data: Optional<User>) {
+    return {
+      ...(data?.id && { id: data.id }),
+      ...(data?.publicId && { publicId: data.publicId }),
+      ...(data?.email && { email: data.email }),
+    };
   }
 
-  buildWhereBy(data: { id: string; publicId: string; email: string }) {
-    let where = {};
+  async find(args?: Optional<User>) {
+    const where = this.buildWhereClause(args);
 
-    if (data.id) {
-      where = { ...where, id: data.id };
-    }
-
-    if (data.publicId) {
-      where = { ...where, publicId: data.publicId };
-    }
-
-    if (data.email) {
-      where = { ...where, email: data.email };
-    }
-
-    return where;
+    return this.prismaService.user.findMany({ where });
   }
 
-  findBy(args: any) {
-    const where = this.buildWhereBy(args);
+  async findOne(args: Optional<User>) {
+    const where = this.buildWhereClause(args);
 
     return this.prismaService.user.findFirst({ where });
   }

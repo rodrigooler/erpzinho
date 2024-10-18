@@ -15,7 +15,7 @@ export class AuthService {
   ): Promise<{
     accessToken: string;
   }> {
-    const user = await this.userService.findBy({ email });
+    const user = await this.userService.findOne({ email });
 
     if (!user || user.password !== password) {
       throw new BadRequestException('Invalid credentials');
