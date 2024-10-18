@@ -23,4 +23,7 @@ docker compose -f "docker-compose.yaml" up -d --build
 ./node_modules/.bin/prisma generate
 
 ./node_modules/.bin/prisma migrate dev
+
+docker exec -it erp-db bash
+psql -U postgres -d postgres -f /docker-entrypoint-initdb.d/seu-script.sh
 ```
